@@ -2,12 +2,12 @@ package com.example.bakery.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "Bakery Service", version = "0.0.1", description = "Documentation APIs v0.0.1"))
@@ -21,9 +21,8 @@ public class AppConfig {
         return configurer;
     }
 
-        @Bean
-        @LoadBalanced
-        public RestTemplate restTemplate() {
-            return new RestTemplate();
-        }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(5);
+    }
 }
