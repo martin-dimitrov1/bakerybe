@@ -1,14 +1,11 @@
 package com.example.bakery.models.entities;
 
-import com.example.bakery.models.SubCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +18,6 @@ import java.util.List;
 public class Category extends AbstractEntityId {
     private String mainCategoryName;
 
-    @ElementCollection
+    @OneToMany(cascade = CascadeType.ALL)
     private List<SubCategory> subCategories = new ArrayList<>();
 }

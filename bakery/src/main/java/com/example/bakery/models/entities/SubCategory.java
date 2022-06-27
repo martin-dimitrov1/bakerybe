@@ -1,21 +1,20 @@
-package com.example.bakery.models;
+package com.example.bakery.models.entities;
 
+import com.example.bakery.models.entities.AbstractEntityId;
 import com.example.bakery.models.entities.Product;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
-public class SubCategory {
+@Entity
+@Table(name = "subcategory_table")
+public class SubCategory extends AbstractEntityId {
     private String categoryName;
 
     @OneToMany(cascade = CascadeType.DETACH)
