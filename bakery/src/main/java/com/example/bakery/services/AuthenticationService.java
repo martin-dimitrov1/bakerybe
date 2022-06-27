@@ -3,6 +3,7 @@ package com.example.bakery.services;
 import com.example.bakery.exception.CustomException;
 import com.example.bakery.models.AuthenticationUser;
 import com.example.bakery.models.RegistrationUser;
+import com.example.bakery.models.dto.UserDTO;
 import com.example.bakery.models.entities.User;
 import com.example.bakery.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,9 @@ public class AuthenticationService {
                 passwordEncoder.matches(user.getPassword(), userFromRepo.getPassword());
     }
 
-    public User registerUser(RegistrationUser user) {
+    public UserDTO registerUser(RegistrationUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(new User(user));
+        return new UserDTO(userRepository.save(new User(user)));
     }
 
     public boolean isUsernameAvailable(String username) {

@@ -2,6 +2,7 @@ package com.example.bakery.services;
 
 import com.example.bakery.exception.CustomException;
 import com.example.bakery.models.UserProduct;
+import com.example.bakery.models.dto.CartDTO;
 import com.example.bakery.models.entities.Cart;
 import com.example.bakery.models.entities.Product;
 import com.example.bakery.models.entities.User;
@@ -20,14 +21,14 @@ public class CartService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    public Cart getUsersCartById(Long userId) {
-        return cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new CustomException("Not found cart for user with id: " + userId));
+    public CartDTO getUsersCartById(Long userId) {
+        return new CartDTO(cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException("Not found cart for user with id: " + userId)));
     }
 
-    public Cart getUsersCartByUsername(String username) {
-        return cartRepository.findByUserUsername(username)
-                .orElseThrow(() -> new CustomException("Not found cart for user with username: " + username));
+    public CartDTO getUsersCartByUsername(String username) {
+        return new CartDTO(cartRepository.findByUserUsername(username)
+                .orElseThrow(() -> new CustomException("Not found cart for user with username: " + username)));
     }
 
     public Product addProductToUserCart(UserProduct userProduct) {

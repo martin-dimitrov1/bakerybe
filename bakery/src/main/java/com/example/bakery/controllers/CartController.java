@@ -1,9 +1,8 @@
 package com.example.bakery.controllers;
 
 import com.example.bakery.models.UserProduct;
-import com.example.bakery.models.entities.Cart;
+import com.example.bakery.models.dto.CartDTO;
 import com.example.bakery.models.entities.Product;
-import com.example.bakery.models.entities.User;
 import com.example.bakery.services.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +14,12 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping("/byUserId")
-    public Cart getByUserId(@RequestParam Long userId) {
+    public CartDTO getByUserId(@RequestParam Long userId) {
         return cartService.getUsersCartById(userId);
     }
 
     @GetMapping("/byUsername")
-    public Cart getByUsername(@RequestParam String username) {
+    public CartDTO getByUsername(@RequestParam String username) {
         return cartService.getUsersCartByUsername(username);
     }
 

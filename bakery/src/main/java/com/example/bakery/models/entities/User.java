@@ -1,6 +1,7 @@
 package com.example.bakery.models.entities;
 
 import com.example.bakery.models.RegistrationUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -21,6 +22,7 @@ public class User extends AbstractEntityId {
     private String email;
     private String role;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Cart cart = new Cart(this);
 

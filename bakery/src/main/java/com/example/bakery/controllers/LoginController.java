@@ -2,6 +2,7 @@ package com.example.bakery.controllers;
 
 import com.example.bakery.models.AuthenticationUser;
 import com.example.bakery.models.RegistrationUser;
+import com.example.bakery.models.dto.UserDTO;
 import com.example.bakery.models.entities.User;
 import com.example.bakery.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody RegistrationUser user) {
+    public UserDTO registerUser(@RequestBody RegistrationUser user) {
         return authenticationService.registerUser(user);
     }
 }
