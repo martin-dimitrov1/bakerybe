@@ -2,6 +2,7 @@ package com.example.bakery.models.entities.customized;
 
 import com.example.bakery.models.EventDetails;
 import com.example.bakery.models.PersonalInformation;
+import com.example.bakery.models.dto.CustomCakeDTO;
 import com.example.bakery.models.entities.AbstractEntityId;
 import com.example.bakery.models.entities.Image;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,6 +10,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +34,13 @@ public class CustomCake extends AbstractEntityId {
     @ToString.Exclude
     @JsonIgnore
     private List<Image> images = new ArrayList<>();
+
+    public CustomCake(CustomCakeDTO customCake, List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+        this.eventDetails = customCake.eventDetails();
+        this.personalInformation = customCake.personalInformation();
+        this.neededDate = customCake.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
 
     public void addIngredient(Ingredient ingredient) {
         this.ingredients.add(ingredient);
