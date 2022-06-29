@@ -1,12 +1,14 @@
 package com.example.bakery.services;
 
 import com.example.bakery.exception.CustomException;
+import com.example.bakery.models.dto.IngredientGroupDTO;
 import com.example.bakery.models.entities.customized.Ingredient;
 import com.example.bakery.models.enums.CakeIngredient;
 import com.example.bakery.repositories.customized.IngredientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,5 +34,18 @@ public class IngredientService {
     public void deleteIngredient(Long ingredientId) {
         ingredientRepository.delete(ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new CustomException("Cannot delete non-existing ingredient with id: " + ingredientId)));
+    }
+
+    public List<IngredientGroupDTO> getAllGroupedByType() {
+        List<Ingredient> ingredientsSponge = ingredientRepository.findByType(CakeIngredient.SPONGE);
+        List<Ingredient> ingredientsSauce = ingredientRepository.findByType(CakeIngredient.SAUCE);
+        List<Ingredient> ingredientsIcing = ingredientRepository.findByType(CakeIngredient.ICING);
+        List<Ingredient> ingredientsTopings = ingredientRepository.findByType(CakeIngredient.TOPINGS);
+        List<IngredientGroupDTO> ingredientGroup = new ArrayList<>();
+        ingredientGroup.add(new IngredientGroupDTO(CakeIngredient.SPONGE, ingredientsSponge));
+        ingredientGroup.add(new IngredientGroupDTO(CakeIngredient.SAUCE, ingredientsSauce));
+        ingredientGroup.add(new IngredientGroupDTO(CakeIngredient.ICING, ingredientsIcing));
+        ingredientGroup.add(new IngredientGroupDTO(CakeIngredient.TOPINGS, ingredientsTopings));
+        return ingredientGroup;
     }
 }

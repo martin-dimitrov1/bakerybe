@@ -1,5 +1,6 @@
 package com.example.bakery.controllers;
 
+import com.example.bakery.models.dto.IngredientGroupDTO;
 import com.example.bakery.models.entities.customized.Ingredient;
 import com.example.bakery.models.enums.CakeIngredient;
 import com.example.bakery.services.IngredientService;
@@ -17,6 +18,12 @@ public class IngredientController {
     @GetMapping("/getAllByType")
     public List<Ingredient> getAllByType(@RequestParam CakeIngredient type) {
         return ingredientService.getAllByType(type);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/getAllGroupedByType")
+    public List<IngredientGroupDTO> getAllGroupedByType() {
+        return ingredientService.getAllGroupedByType();
     }
 
     @PostMapping("/insertIngredient")
