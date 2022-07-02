@@ -44,11 +44,10 @@ public class ProductController {
         productService.deleteProduct(id);
     }
 
-
     @PutMapping(value = "/addImageToProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Product addImgToProduct(@RequestParam MultipartFile img,
+    public Product addImgToProduct(@RequestParam List<MultipartFile> imgs,
                                    @RequestParam Long productId) throws IOException {
-        return productService.addImgToProduct(img, productId);
+        return productService.addImgToProduct(imgs, productId);
     }
 
     @PutMapping("/removeImagesFromProduct")

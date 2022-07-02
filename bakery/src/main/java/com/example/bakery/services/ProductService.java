@@ -45,9 +45,12 @@ public class ProductService {
         productRepository.delete(productToBeDeleted);
     }
 
-    public Product addImgToProduct(MultipartFile img, Long productId) throws IOException {
+    public Product addImgToProduct(List<MultipartFile> imgs, Long productId) throws IOException {
         Product product = getProductById(productId);
-        product.addImage(new Image(img.getBytes()));
+        product.removeAllImages();
+        for (MultipartFile img: imgs) {
+            product.addImage(new Image(img.getBytes()));
+        }
         return productRepository.save(product);
     }
 

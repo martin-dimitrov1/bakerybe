@@ -9,12 +9,18 @@ import com.example.bakery.repositories.ProductRepository;
 import com.example.bakery.repositories.UserRepository;
 import com.example.bakery.repositories.customized.IngredientRepository;
 import com.example.bakery.repositories.customized.LifeCelebrationRepository;
+import com.example.bakery.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @Configuration
@@ -23,15 +29,17 @@ public class InitializeData implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ProductService productService;
     private final IngredientRepository ingredientRepository;
     private final LifeCelebrationRepository lifeCelebrationRepository;
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args) throws IOException {
         insertSuperUser();
         insertProducts();
         insertIngredients();
         insertLifeCelebrations();
+        addImagesToIngredients();
     }
 
     private void insertSuperUser() {
@@ -47,12 +55,43 @@ public class InitializeData implements ApplicationRunner {
 
     private void insertProducts() {
         if (productRepository.count() == 0) {
-            Product product = new Product();
-            product.setName("Wedding cake");
-            product.setCategory("Celebration cakes");
-            product.setPrice(5);
-            product.setCount(2);
-            productRepository.save(product);
+            Product product1 = new Product();
+            product1.setName("Lady Blue");
+            product1.setCategory("Pastry");
+            product1.setPrice(690);
+            product1.setCount(2);
+
+            Product product2 = new Product();
+            product2.setName("Pistachio");
+            product2.setCategory("Pastry");
+            product2.setPrice(690);
+            product2.setCount(2);
+
+            Product product3 = new Product();
+            product3.setName("Brulee");
+            product3.setCategory("Pastry");
+            product3.setPrice(690);
+            product3.setCount(5);
+
+            Product product4 = new Product();
+            product4.setName("Cheesecake");
+            product4.setCategory("Pastry");
+            product4.setPrice(690);
+            product4.setCount(3);
+
+            Product product5 = new Product();
+            product5.setName("Trilogy");
+            product5.setCategory("Pastry");
+            product5.setPrice(690);
+            product5.setCount(10);
+
+            Product product6 = new Product();
+            product6.setName("Garage");
+            product6.setCategory("Pastry");
+            product6.setPrice(690);
+            product6.setCount(7);
+
+            productRepository.saveAll(List.of(product1,product2,product3,product4,product5,product6));
         }
     }
 
@@ -139,6 +178,18 @@ public class InitializeData implements ApplicationRunner {
                new LifeCelebration("Get Well"),
                new LifeCelebration("Other")
             ));
+        }
+    }
+
+    private void addImagesToIngredients() throws IOException {
+        if (productRepository.count() != 0) {
+            for (int i = 57; i <= 62; i++) {
+                File file = new File("bakery/src/main/resources/templates/images/image" + i + ".jpg");
+                FileInputStream input = new FileInputStream(file);
+                MultipartFile multipartFile = new MockMultipartFile("file" + i,
+                        file.getName(), "image/jpeg", input);
+                productService.addImgToProduct(List.of(multipartFile), (long) (i - 56));
+            }
         }
     }
 }
