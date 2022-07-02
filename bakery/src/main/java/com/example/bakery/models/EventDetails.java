@@ -13,6 +13,6 @@ import javax.persistence.Embeddable;
 public class EventDetails {
     private String lifeCelebration;
     private String partyTheme;
-    private int tierCount = 1;
-    private int sliceCount = 8;
+    private Integer tierCount = 1;
+    private Integer sliceCount = 8;
 }

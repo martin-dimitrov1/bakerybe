@@ -5,15 +5,15 @@ import com.example.bakery.models.PersonalInformation;
 import com.example.bakery.models.dto.CustomCakeDTO;
 import com.example.bakery.models.entities.AbstractEntityId;
 import com.example.bakery.models.entities.Image;
+import com.example.bakery.models.enums.CakeIngredient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -22,8 +22,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "custom_cake_table")
 public class CustomCake extends AbstractEntityId {
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Ingredient> ingredients = new ArrayList<>();
+    @ElementCollection
+    @MapKeyEnumerated(EnumType.STRING)
+    private Map<CakeIngredient, String> ingredients = new HashMap<>();
     @Embedded
     private EventDetails eventDetails = new EventDetails();
     @Embedded
@@ -36,18 +37,11 @@ public class CustomCake extends AbstractEntityId {
     private List<Image> images = new ArrayList<>();
 
     public CustomCake(CustomCakeDTO customCake, List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-        this.eventDetails = customCake.eventDetails();
-        this.personalInformation = customCake.personalInformation();
-        this.neededDate = customCake.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
-    public void addIngredient(Ingredient ingredient) {
-        this.ingredients.add(ingredient);
-    }
-
-    public void removeIngredient(Ingredient ingredient) {
-        this.ingredients.remove(ingredient);
+        this.ingredients = ingredients.stream().collect(Collectors.toMap(Ingredient::getType, Ingredient::getName ));
+        this.eventDetails = new EventDetails(customCake.celebration(), customCake.theme(), customCake.tiers(), customCake.guests());
+        this.personalInformation = new PersonalInformation(customCake.firstName(), customCake.lastName(), customCake.email(), customCake.phone(), false);
+        if (customCake.toDate() == null) this.neededDate = LocalDate.now().plusDays(10);
+        else this.neededDate = customCake.toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     public void addImage(Image image) {

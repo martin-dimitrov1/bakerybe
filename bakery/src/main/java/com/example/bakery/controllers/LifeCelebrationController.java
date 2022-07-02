@@ -10,10 +10,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/celebration")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LifeCelebrationController {
     private final LifeCelebrationService lifeCelebrationService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getAll")
     public List<LifeCelebration> getAll() {
         return lifeCelebrationService.getAll();

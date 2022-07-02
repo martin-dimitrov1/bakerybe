@@ -12,6 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/ingredient")
+@CrossOrigin(origins = "http://localhost:3000")
 public class IngredientController {
     private final IngredientService ingredientService;
 
@@ -20,7 +21,6 @@ public class IngredientController {
         return ingredientService.getAllByType(type);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getAllGroupedByType")
     public List<IngredientGroupDTO> getAllGroupedByType() {
         return ingredientService.getAllGroupedByType();

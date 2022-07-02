@@ -24,6 +24,10 @@ public class CustomCakeService {
     private final OrderRepository orderRepository;
 
     public ResponseEntity<?> submitCustomizedCake(CustomCakeDTO customCake) {
+        if(customCake.icingId() == null || customCake.sauceId() == null || customCake.spongeId() == null ||
+                customCake.topingsId()== null) {
+            customCake = new CustomCakeDTO(customCake);
+        }
         Ingredient sponge = ingredientRepository.findById(customCake.spongeId()).orElseThrow();
         Ingredient sauce = ingredientRepository.findById(customCake.sauceId()).orElseThrow();
         Ingredient icing = ingredientRepository.findById(customCake.icingId()).orElseThrow();

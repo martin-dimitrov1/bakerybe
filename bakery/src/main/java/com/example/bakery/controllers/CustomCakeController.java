@@ -13,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/customize")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CustomCakeController {
     private final CustomCakeService customCakeService;
 
