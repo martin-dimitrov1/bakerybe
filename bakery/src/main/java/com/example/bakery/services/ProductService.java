@@ -1,8 +1,12 @@
 package com.example.bakery.services;
 
 import com.example.bakery.exception.CustomException;
+import com.example.bakery.models.dto.SubCategoryDTO;
+import com.example.bakery.models.entities.Category;
 import com.example.bakery.models.entities.Image;
 import com.example.bakery.models.entities.Product;
+import com.example.bakery.models.entities.SubCategory;
+import com.example.bakery.repositories.CategoryRepository;
 import com.example.bakery.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +21,10 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     public List<Product> getAllProducts(Optional<String> category) {
-        if (category.isPresent()) return productRepository.findAllByCategory(category.get());
+        if (category.isPresent()) return productRepository.findAllByMainCategory(category.get());
         return productRepository.findAll();
     }
 
@@ -29,6 +34,16 @@ public class ProductService {
     }
 
     public Product insertProduct(Product product) {
+        Category mainCategory = getCategoryByName(product.getMainCategory());
+        if (mainCategory == null) {
+            categoryRepository.save(new Category(product.getMainCategory(), product.getSubCategory()));
+            return productRepository.save(product);
+        }
+        if (getSubCategory(product.getMainCategory(), product.getSubCategory()) == null) {
+            mainCategory.addSubCategory(new SubCategory(product.getSubCategory()));
+            categoryRepository.save(mainCategory);
+            return productRepository.save(product);
+        }
         return productRepository.save(product);
     }
 
@@ -41,14 +56,14 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         Product productToBeDeleted = productRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Cannot delete non-existant user with id:" + id));
+                .orElseThrow(() -> new CustomException("Cannot delete non-existant product with id:" + id));
         productRepository.delete(productToBeDeleted);
     }
 
     public Product addImgToProduct(List<MultipartFile> imgs, Long productId) throws IOException {
         Product product = getProductById(productId);
         product.removeAllImages();
-        for (MultipartFile img: imgs) {
+        for (MultipartFile img : imgs) {
             product.addImage(new Image(img.getBytes()));
         }
         return productRepository.save(product);
@@ -63,8 +78,21 @@ public class ProductService {
     public List<String> getImagesForProduct(Long productId) {
         Product product = getProductById(productId);
         return product.getImages()
-                        .stream()
-                        .map(image -> "/images/get?imgId=" + image.getId())
-                        .collect(Collectors.toList());
+                .stream()
+                .map(image -> "/images/get?imgId=" + image.getId())
+                .collect(Collectors.toList());
+    }
+
+    public List<SubCategoryDTO> getSubCategoriesForMain(Optional<String> mainCategory) {
+        return mainCategory.map(categoryRepository::findSubsByMainCategory)
+                .orElseGet(categoryRepository::findAllSubCategories);
+    }
+
+    private Category getCategoryByName(String mainCategory) {
+        return categoryRepository.findByMainCategoryName(mainCategory);
+    }
+
+    private SubCategory getSubCategory(String mainCategory, String subCategory) {
+        return categoryRepository.findSubByMainAndSubCategoryName(mainCategory, subCategory);
     }
 }

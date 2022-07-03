@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegistrationUser {
     @AvailableUsername
-    private String username;
+    private String name;
+    private String lastName;
     private String password;
     private String email;
+    private String phone;
+    private String receiveNotifications;
 }

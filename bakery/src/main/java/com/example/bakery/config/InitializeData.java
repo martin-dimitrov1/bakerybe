@@ -5,6 +5,7 @@ import com.example.bakery.models.entities.User;
 import com.example.bakery.models.entities.customized.Ingredient;
 import com.example.bakery.models.entities.customized.LifeCelebration;
 import com.example.bakery.models.enums.CakeIngredient;
+import com.example.bakery.models.enums.MainCategoryEnum;
 import com.example.bakery.repositories.ProductRepository;
 import com.example.bakery.repositories.UserRepository;
 import com.example.bakery.repositories.customized.IngredientRepository;
@@ -57,41 +58,47 @@ public class InitializeData implements ApplicationRunner {
         if (productRepository.count() == 0) {
             Product product1 = new Product();
             product1.setName("Lady Blue");
-            product1.setCategory("Pastry");
+            product1.setMainCategory(MainCategoryEnum.DESSERTS.getLabel());
+            product1.setSubCategory("Pastry");
             product1.setPrice(690);
             product1.setCount(2);
 
             Product product2 = new Product();
             product2.setName("Pistachio");
-            product2.setCategory("Pastry");
+            product2.setMainCategory(MainCategoryEnum.DESSERTS.getLabel());
+            product2.setSubCategory("Pastry");
             product2.setPrice(690);
             product2.setCount(2);
 
             Product product3 = new Product();
             product3.setName("Brulee");
-            product3.setCategory("Pastry");
+            product3.setMainCategory(MainCategoryEnum.DESSERTS.getLabel());
+            product3.setSubCategory("Pastry");
             product3.setPrice(690);
             product3.setCount(5);
 
             Product product4 = new Product();
             product4.setName("Cheesecake");
-            product4.setCategory("Pastry");
+            product4.setMainCategory(MainCategoryEnum.DESSERTS.getLabel());
+            product4.setSubCategory("Pastry");
             product4.setPrice(690);
             product4.setCount(3);
 
             Product product5 = new Product();
             product5.setName("Trilogy");
-            product5.setCategory("Pastry");
+            product5.setMainCategory(MainCategoryEnum.DESSERTS.getLabel());
+            product5.setSubCategory("Pastry");
             product5.setPrice(690);
             product5.setCount(10);
 
             Product product6 = new Product();
             product6.setName("Garage");
-            product6.setCategory("Pastry");
+            product6.setMainCategory(MainCategoryEnum.DESSERTS.getLabel());
+            product6.setSubCategory("Pastry");
             product6.setPrice(690);
             product6.setCount(7);
 
-            productRepository.saveAll(List.of(product1,product2,product3,product4,product5,product6));
+            List.of(product1, product2, product3, product4, product5, product6).forEach(productService::insertProduct);
         }
     }
 
@@ -159,24 +166,24 @@ public class InitializeData implements ApplicationRunner {
     private void insertLifeCelebrations() {
         if (lifeCelebrationRepository.count() == 0) {
             lifeCelebrationRepository.saveAll(List.of(
-               new LifeCelebration("Birthday"),
-               new LifeCelebration("Wedding Bridal"),
-               new LifeCelebration("Shower"),
-               new LifeCelebration("Anniversary"),
-               new LifeCelebration("Holy"),
-               new LifeCelebration("Communion"),
-               new LifeCelebration("Baptism"),
-               new LifeCelebration("Graduation"),
-               new LifeCelebration("Halloween"),
-               new LifeCelebration("Christmas"),
-               new LifeCelebration("Easter"),
-               new LifeCelebration("Valentines"),
-               new LifeCelebration("Mother's"),
-               new LifeCelebration("Father's Day"),
-               new LifeCelebration("4th of July"),
-               new LifeCelebration("Quincenera"),
-               new LifeCelebration("Get Well"),
-               new LifeCelebration("Other")
+                    new LifeCelebration("Birthday"),
+                    new LifeCelebration("Wedding Bridal"),
+                    new LifeCelebration("Shower"),
+                    new LifeCelebration("Anniversary"),
+                    new LifeCelebration("Holy"),
+                    new LifeCelebration("Communion"),
+                    new LifeCelebration("Baptism"),
+                    new LifeCelebration("Graduation"),
+                    new LifeCelebration("Halloween"),
+                    new LifeCelebration("Christmas"),
+                    new LifeCelebration("Easter"),
+                    new LifeCelebration("Valentines"),
+                    new LifeCelebration("Mother's"),
+                    new LifeCelebration("Father's Day"),
+                    new LifeCelebration("4th of July"),
+                    new LifeCelebration("Quincenera"),
+                    new LifeCelebration("Get Well"),
+                    new LifeCelebration("Other")
             ));
         }
     }

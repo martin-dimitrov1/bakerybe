@@ -1,5 +1,6 @@
 package com.example.bakery.controllers;
 
+import com.example.bakery.models.dto.SubCategoryDTO;
 import com.example.bakery.models.entities.Product;
 import com.example.bakery.services.ImageService;
 import com.example.bakery.services.ProductService;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/product")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
     private final ProductService productService;
     private final ImageService imageService;
@@ -58,5 +60,10 @@ public class ProductController {
     @GetMapping("/getImagesForProduct")
     public List<String> getImagesForProduct(@RequestParam Long productId) {
         return productService.getImagesForProduct(productId);
+    }
+
+    @GetMapping("/getSubCategoriesForMain")
+    public List<SubCategoryDTO> getSubCategoriesForMain(@RequestParam Optional<String> mainCategory) {
+        return productService.getSubCategoriesForMain(mainCategory);
     }
 }

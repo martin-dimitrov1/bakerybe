@@ -1,6 +1,7 @@
 package com.example.bakery.services;
 
 import com.example.bakery.exception.CustomException;
+import com.example.bakery.models.UserProduct;
 import com.example.bakery.models.dto.CustomCakeApproval;
 import com.example.bakery.models.dto.CustomCakeDTO;
 import com.example.bakery.models.entities.Image;
@@ -25,6 +26,7 @@ public class CustomCakeService {
     private final CustomCakeRepository customCakeRepository;
     private final IngredientRepository ingredientRepository;
     private final OrderRepository orderRepository;
+    private final CartService cartService;
 
     public ResponseEntity<?> submitCustomizedCake(CustomCakeDTO customCake) {
         if (customCake.icingId() == null || customCake.sauceId() == null || customCake.spongeId() == null ||
@@ -37,6 +39,7 @@ public class CustomCakeService {
         Ingredient toping = ingredientRepository.findById(customCake.topingsId()).orElseThrow();
         CustomCake customCakeEntity = new CustomCake(customCake, List.of(sponge, sauce, icing, toping));
         customCakeRepository.save(customCakeEntity);
+        //todo: add to cart logic
         return ResponseEntity.ok(customCakeEntity);
     }
 

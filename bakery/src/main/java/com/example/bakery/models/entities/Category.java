@@ -18,6 +18,16 @@ import java.util.List;
 public class Category extends AbstractEntityId {
     private String mainCategoryName;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<SubCategory> subCategories = new ArrayList<>();
+
+    public Category(String main, String sub) {
+        this.mainCategoryName = main;
+        this.subCategories = new ArrayList<>();
+        this.subCategories.add(new SubCategory(sub));
+    }
+
+    public void addSubCategory(SubCategory subCategory) {
+        this.subCategories.add(subCategory);
+    }
 }

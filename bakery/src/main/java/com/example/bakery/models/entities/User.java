@@ -18,18 +18,25 @@ import java.util.Objects;
 public class User extends AbstractEntityId {
     @Column(nullable = false, unique = true)
     private String username;
+    private String lastName;
     private String password;
     private String email;
+    private String phone;
     private String role;
+    private boolean receiveNotifications;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Cart cart = new Cart(this);
 
     public User(RegistrationUser user) {
-        this.username = user.getUsername();
+        this.username = user.getName();
+        this.lastName = user.getLastName();
         this.password = user.getPassword();
         this.email = user.getEmail();
+        this.phone = user.getPhone();
+        if (user.getReceiveNotifications() != null)
+            this.receiveNotifications = user.getReceiveNotifications().equals("Yes");
         this.role = "USER";
     }
 

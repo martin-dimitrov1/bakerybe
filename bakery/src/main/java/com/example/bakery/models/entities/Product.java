@@ -16,7 +16,8 @@ import java.util.Objects;
 @Table(name = "product_table")
 public class Product extends AbstractEntityId {
     private String name;
-    private String category;
+    private String mainCategory;
+    private String subCategory;
     private Integer price;
     private Integer count;
     private String alergens;
@@ -28,7 +29,7 @@ public class Product extends AbstractEntityId {
 
     public void update(Product product) {
         if (product.getName() != null) this.setName(product.getName());
-        if (product.getCategory() != null) this.setCategory(product.getCategory());
+        if (product.getSubCategory() != null) this.setSubCategory(product.getSubCategory());
         if (product.getPrice() != null) this.setPrice(product.getPrice());
         if (product.getCount() != null) this.setCount(product.getCount());
         if (product.getAlergens() != null) this.setAlergens(product.getAlergens());

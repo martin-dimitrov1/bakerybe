@@ -19,4 +19,9 @@ public class SubCategory extends AbstractEntityId {
 
     @OneToMany(cascade = CascadeType.DETACH)
     private List<Product> productList = new ArrayList<>();
+
+    public SubCategory(String sub) {
+        this.categoryName = sub;
+        this.productList = new ArrayList<>();
+    }
 }
