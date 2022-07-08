@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/cart")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
     private final CartService cartService;
 

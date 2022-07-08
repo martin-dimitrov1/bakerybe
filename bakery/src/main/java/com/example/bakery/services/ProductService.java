@@ -1,17 +1,19 @@
 package com.example.bakery.services;
 
 import com.example.bakery.exception.CustomException;
+import com.example.bakery.models.ProductOrderVO;
 import com.example.bakery.models.dto.SubCategoryDTO;
-import com.example.bakery.models.entities.Category;
-import com.example.bakery.models.entities.Image;
-import com.example.bakery.models.entities.Product;
-import com.example.bakery.models.entities.SubCategory;
+import com.example.bakery.models.entities.*;
 import com.example.bakery.repositories.CategoryRepository;
 import com.example.bakery.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Pageable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,19 @@ public class ProductService {
     public List<Product> getAllProducts(Optional<String> category) {
         if (category.isPresent()) return productRepository.findAllByMainCategory(category.get());
         return productRepository.findAll();
+    }
+
+    public Page<Product> getAllProductsByCategories(String mainCategory, Optional<String> subCategory) {
+        //here page should be given as param (i think) so we can increment pageNumber
+        if (subCategory.isPresent()) {
+            return productRepository.findAllByMainCategoryAndSubCategory(
+                    mainCategory,
+                    subCategory.get(),
+                    (Pageable) PageRequest.of(1, 8, Sort.by(Sort.Order.asc("id"))));
+        }
+        return productRepository.findAllByMainCategory(
+                mainCategory,
+                (Pageable) PageRequest.of(1, 8, Sort.by(Sort.Order.asc("id"))));
     }
 
     public Product getProductById(Long id) {
@@ -94,5 +109,13 @@ public class ProductService {
 
     private SubCategory getSubCategory(String mainCategory, String subCategory) {
         return categoryRepository.findSubByMainAndSubCategoryName(mainCategory, subCategory);
+    }
+
+    public void submitOrder(ProductOrderVO order) {
+        Product product = productRepository.findById(order.id()).orElseThrow(() -> new CustomException("Not found productId"));
+        Cart cart = new Cart();
+        cart.addProduct(product);
+        //change cart entity , add in quantity and details
+        // so we can work around customizecake and add it to the cart too
     }
 }

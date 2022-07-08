@@ -1,10 +1,12 @@
 package com.example.bakery.controllers;
 
+import com.example.bakery.models.ProductOrderVO;
 import com.example.bakery.models.dto.SubCategoryDTO;
 import com.example.bakery.models.entities.Product;
 import com.example.bakery.services.ImageService;
 import com.example.bakery.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,12 @@ public class ProductController {
     @GetMapping("/getAll")
     public List<Product> getAllProducts(@RequestParam(required = false) Optional<String> category) {
         return productService.getAllProducts(category);
+    }
+
+    @GetMapping("/getAllByCategories")
+    public Page<Product> getAllByCategories(@RequestParam String category,
+                                            @RequestParam(required= false) Optional<String> subCategory) {
+        return productService.getAllProductsByCategories(category, subCategory);
     }
 
     @GetMapping("/getById")
@@ -65,5 +73,10 @@ public class ProductController {
     @GetMapping("/getSubCategoriesForMain")
     public List<SubCategoryDTO> getSubCategoriesForMain(@RequestParam Optional<String> mainCategory) {
         return productService.getSubCategoriesForMain(mainCategory);
+    }
+
+    @PostMapping("/submitOrder")
+    public void submitOrder(@RequestBody ProductOrderVO order) {
+        productService.submitOrder(order);
     }
 }

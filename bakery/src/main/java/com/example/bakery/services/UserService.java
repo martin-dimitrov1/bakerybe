@@ -36,4 +36,8 @@ public class UserService {
                 .orElseThrow(() -> new CustomException("Cannot delete non-existing user."));
         userRepository.delete(userToBeDeleted);
     }
+
+    public UserDTO getUserByEmail(String email) {
+        return new UserDTO(userRepository.findByEmail(email).orElseThrow(() -> new CustomException("No user found.")));
+    }
 }

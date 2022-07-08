@@ -8,6 +8,8 @@ import com.example.bakery.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/authentication")
 @RequiredArgsConstructor
@@ -16,8 +18,8 @@ public class LoginController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public boolean authenticateUser(@RequestBody AuthenticationUser user) {
-        return authenticationService.authenticateUser(user);
+    public boolean authenticateUser(@RequestBody AuthenticationUser user, HttpServletResponse response) {
+        return authenticationService.authenticateUser(user, response);
     }
 
     @PostMapping("/register")

@@ -48,7 +48,7 @@ public class InitializeData implements ApplicationRunner {
             User superUser = new User();
             superUser.setUsername("admin");
             superUser.setPassword(passwordEncoder.encode("admin"));
-            superUser.setEmail("adminEmail@abv.bg");
+            superUser.setEmail("admin@abv.bg");
             superUser.setRole("ADMIN");
             userRepository.save(superUser);
         }
