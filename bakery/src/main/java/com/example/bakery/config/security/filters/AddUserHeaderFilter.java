@@ -1,6 +1,7 @@
 package com.example.bakery.config.security.filters;
 
 import com.example.bakery.models.AuthenticationUser;
+import com.example.bakery.models.RegistrationUser;
 import com.example.bakery.services.AuthenticationService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,10 @@ public class AddUserHeaderFilter extends OncePerRequestFilter {
                     },
                     () -> {
                         AuthenticationUser anonUser = AuthenticationUser.createAnonymous(tokenHeader);
+                        authService.registerUser(RegistrationUser.builder()
+                                        .name("GUEST_" + tokenHeader.substring(0, 3))
+                                        .token(tokenHeader)
+                                .build());
                         SecurityContextHolder.getContext()
                                 .setAuthentication(new UsernamePasswordAuthenticationToken(anonUser, null, anonUser.getAuthorities()));
                     });

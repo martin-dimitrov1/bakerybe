@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
+@Profile("bakery-dev")
 @Configuration
 @RequiredArgsConstructor
 public class InitializeData implements ApplicationRunner {

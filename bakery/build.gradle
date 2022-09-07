@@ -34,6 +34,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.mockito:mockito-inline:4.7.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

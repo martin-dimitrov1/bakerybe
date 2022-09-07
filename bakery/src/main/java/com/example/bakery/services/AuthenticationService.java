@@ -41,7 +41,7 @@ public class AuthenticationService implements UserDetailsService {
 
     public UserDTO registerUser(RegistrationUser registerUser) {
         User u = new User(registerUser);
-        u.setPassword(passwordEncoder.encode(registerUser.getPassword()));
+        if (u.getPassword() != null) u.setPassword(passwordEncoder.encode(registerUser.getPassword()));
 
         userRepository
                 .findByToken(registerUser.getToken())

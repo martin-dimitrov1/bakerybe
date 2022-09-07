@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
 //                .anonymous(this::loadAnonymousUser)
                 .authorizeRequests()
-//                .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
 //                .antMatchers("/user/generateToken").permitAll()
 //                .antMatchers("/cart/**").permitAll()
 //                .antMatchers("/product/**").hasAuthority("ADMIN")
