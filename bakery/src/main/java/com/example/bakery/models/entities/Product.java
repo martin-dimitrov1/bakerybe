@@ -20,7 +20,7 @@ public class Product extends AbstractEntityId {
     private String subCategory;
     private Integer price;
     private Integer count;
-    private String alergens;
+    private String alergens = "An explosion of flavors - French white mousse, Italian mascarpone and Bulgarian blueberry, combined with vanilla sponge cake.";
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude

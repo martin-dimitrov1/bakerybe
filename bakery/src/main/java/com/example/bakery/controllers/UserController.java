@@ -46,4 +46,9 @@ public class UserController {
     public UserDTO getUserByUsername(@RequestParam String username, HttpServletResponse response) {
         return authenticationService.getUserByUsername(username, response);
     }
+
+    @GetMapping("/generateToken")
+    public String generateHash() {
+        return userService.generateHash();
+    }
 }

@@ -18,8 +18,13 @@ public class LoginController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public boolean authenticateUser(@RequestBody AuthenticationUser user, HttpServletResponse response) {
-        return authenticationService.authenticateUser(user, response);
+    public AuthenticationUser authenticateUser(@RequestBody AuthenticationUser user) {
+        return authenticationService.login(user.getEmail(), user.getPassword());
+    }
+
+    @GetMapping("/token")
+    public AuthenticationUser authenticateUser(@RequestParam String token) {
+        return authenticationService.loginWithToken(token);
     }
 
     @PostMapping("/register")

@@ -1,5 +1,6 @@
 package com.example.bakery.controllers;
 
+import com.example.bakery.models.CartForm;
 import com.example.bakery.models.UserProduct;
 import com.example.bakery.models.dto.CartDTO;
 import com.example.bakery.models.entities.Product;
@@ -19,18 +20,28 @@ public class CartController {
         return cartService.getUsersCartById(userId);
     }
 
+    @GetMapping("/byToken")
+    public CartDTO getByToken(@RequestParam String token) {
+        return cartService.getUsersCartByToken(token);
+    }
+
     @GetMapping("/byUsername")
     public CartDTO getByUsername(@RequestParam String username) {
         return cartService.getUsersCartByUsername(username);
     }
 
-    @PutMapping("/addToUserCart")
-    public Product addToUserCart(@RequestBody UserProduct userProduct) {
-        return cartService.addProductToUserCart(userProduct);
-    }
-
     @PutMapping("/removeFromUserCart")
     public void removeFromUserCart(@RequestBody UserProduct userProduct) {
         cartService.removeProductFromUserCart(userProduct);
+    }
+
+    @GetMapping("/items/count")
+    public int getCartItemsCount(@RequestParam String token) {
+       return cartService.getItemCount(token);
+    }
+
+    @PostMapping("/submitCart")
+    public void submitCart(@RequestBody CartForm form) {
+       cartService.submitCart(form);
     }
 }

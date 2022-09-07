@@ -7,34 +7,48 @@ import com.example.bakery.models.dto.UserDTO;
 import com.example.bakery.models.entities.User;
 import com.example.bakery.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public boolean authenticateUser(AuthenticationUser user, HttpServletResponse response) {
-        User userFromRepo = userRepository
-                .findByEmail(user.getEmail())
-                .orElse(new User());
-        boolean authenticated = userFromRepo.getEmail().equals(user.getEmail()) &&
-                passwordEncoder.matches(user.getPassword(), userFromRepo.getPassword());
-        if (authenticated) {
-            response.addHeader("userId", userFromRepo.getId().toString());
-            response.addHeader("userName", userFromRepo.getUsername());
-            response.addHeader("userRole", userFromRepo.getRole());
-        }
-        return authenticated;
+    public AuthenticationUser login(String email, String password) {
+        return userRepository.findByEmail(email)
+                .filter(user -> passwordEncoder.matches(password, user.getPassword()))
+                .map(AuthenticationUser::forExternal)
+                .orElseThrow(() -> new CustomException("Wrong username or password"));
     }
 
-    public UserDTO registerUser(RegistrationUser user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return new UserDTO(userRepository.save(new User(user)));
+    public AuthenticationUser loginWithToken(String token) {
+        return findByToken(token).map(self -> {
+            self.setPassword("");
+            return self;
+        }).orElse(null);
+    }
+
+    public UserDTO registerUser(RegistrationUser registerUser) {
+        User u = new User(registerUser);
+        u.setPassword(passwordEncoder.encode(registerUser.getPassword()));
+
+        userRepository
+                .findByToken(registerUser.getToken())
+                .filter(dbUser -> dbUser.getRole().equals("GUEST"))
+                .ifPresent(prevAnonUser -> u.setId(prevAnonUser.getId()));
+
+        return new UserDTO(userRepository.save(u));
     }
 
     public boolean isUsernameAvailable(String username) {
@@ -43,9 +57,33 @@ public class AuthenticationService {
 
     public UserDTO getUserByUsername(String username, HttpServletResponse response) {
         User userFromRepo = userRepository.findByUsername(username).orElseThrow(() -> new CustomException("User not found"));
-        response.addHeader("userId", userFromRepo.getId().toString());
-        response.addHeader("userName", userFromRepo.getUsername());
-        response.addHeader("userRole", userFromRepo.getRole());
         return new UserDTO(userFromRepo);
+    }
+
+    public Optional<AuthenticationUser> findByToken(String token) {
+        return userRepository.findByToken(token).map(AuthenticationUser::forInternal);
+    }
+    public Optional<UserDTO> findUserByToken(String token) {
+        return userRepository.findByToken(token).map(UserDTO::new);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String token) throws UsernameNotFoundException {
+        System.out.println("================ LOAD BY USERNAME ==============");
+        return userRepository.findByToken(token)
+                .map(this::toAuthUser)
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid token: " + token));
+    }
+
+    public String generateHash() {
+        return UUID.randomUUID().toString();
+    }
+
+    private UserDetails toAuthUser(User user) {
+        return AuthenticationUser.builder()
+                .authorities(Collections.singletonList((GrantedAuthority) user::getRole))
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
     }
 }

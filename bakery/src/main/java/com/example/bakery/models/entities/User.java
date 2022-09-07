@@ -23,6 +23,7 @@ public class User extends AbstractEntityId {
     private String email;
     private String phone;
     private String role;
+    private String token;
     private boolean receiveNotifications;
 
     @JsonIgnore
@@ -30,6 +31,7 @@ public class User extends AbstractEntityId {
     private Cart cart = new Cart(this);
 
     public User(RegistrationUser user) {
+        this.token = user.getToken();
         this.username = user.getName();
         this.lastName = user.getLastName();
         this.password = user.getPassword();
@@ -45,12 +47,12 @@ public class User extends AbstractEntityId {
         if (user.getEmail() != null) this.setEmail(user.getEmail());
     }
 
-    public void addProductToCart(Product product) {
-        this.cart.addProduct(product);
+    public void addProductToCart(CartItem item) {
+        this.cart.addProduct(item);
     }
 
     public void removeProductFromCart(Long productId) {
-        this.cart.removeProduct(productId);
+        this.cart.removeItem(productId);
     }
 
     @Override

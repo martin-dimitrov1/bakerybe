@@ -1,13 +1,12 @@
 package com.example.bakery.models.dto;
 
 import com.example.bakery.models.entities.Cart;
-import com.example.bakery.models.entities.Product;
+import com.example.bakery.models.entities.CartItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
@@ -15,14 +14,18 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CartDTO {
     private Long id;
-    private Map<String, Integer> products = new HashMap<>();
+    private List<CartItemDTO> items;
     private String user;
     private Integer totalPrice;
+    private Integer itemCount;
+    private String token;
 
     public CartDTO(Cart cart) {
         this.id = cart.getId();
-        this.products = cart.getProducts().stream().collect(Collectors.toMap(Product::getName, Product::getPrice));
+        this.items = cart.getItems().stream().map(CartItemDTO::new).collect(Collectors.toList());
         this.user = cart.getUser().getUsername();
-        this.totalPrice = cart.getProducts().stream().mapToInt(Product::getPrice).sum();
+        this.itemCount = this.items.size();
+        this.totalPrice = cart.getItems().stream().mapToInt(CartItem::getPrice).sum();
+        this.token = cart.getUser().getToken();
     }
 }

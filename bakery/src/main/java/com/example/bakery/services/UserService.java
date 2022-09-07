@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -39,5 +41,9 @@ public class UserService {
 
     public UserDTO getUserByEmail(String email) {
         return new UserDTO(userRepository.findByEmail(email).orElseThrow(() -> new CustomException("No user found.")));
+    }
+
+    public String generateHash() {
+        return UUID.randomUUID().toString();
     }
 }

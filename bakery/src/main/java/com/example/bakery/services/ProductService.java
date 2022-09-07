@@ -1,8 +1,11 @@
 package com.example.bakery.services;
 
 import com.example.bakery.exception.CustomException;
+import com.example.bakery.models.AuthenticationUser;
 import com.example.bakery.models.ProductOrderVO;
+import com.example.bakery.models.RegistrationUser;
 import com.example.bakery.models.dto.SubCategoryDTO;
+import com.example.bakery.models.dto.UserDTO;
 import com.example.bakery.models.entities.*;
 import com.example.bakery.repositories.CategoryRepository;
 import com.example.bakery.repositories.ProductRepository;
@@ -10,11 +13,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +28,8 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CartService cartService;
+    private final AuthenticationService authService;
 
     public List<Product> getAllProducts(Optional<String> category) {
         if (category.isPresent()) return productRepository.findAllByMainCategory(category.get());
@@ -36,11 +42,11 @@ public class ProductService {
             return productRepository.findAllByMainCategoryAndSubCategory(
                     mainCategory,
                     subCategory.get(),
-                    (Pageable) PageRequest.of(1, 8, Sort.by(Sort.Order.asc("id"))));
+                    PageRequest.of(1, 8, Sort.by(Sort.Order.asc("id"))));
         }
         return productRepository.findAllByMainCategory(
                 mainCategory,
-                (Pageable) PageRequest.of(1, 8, Sort.by(Sort.Order.asc("id"))));
+                PageRequest.of(1, 8, Sort.by(Sort.Order.asc("id"))));
     }
 
     public Product getProductById(Long id) {
@@ -112,9 +118,15 @@ public class ProductService {
     }
 
     public void submitOrder(ProductOrderVO order) {
-        Product product = productRepository.findById(order.id()).orElseThrow(() -> new CustomException("Not found productId"));
-        Cart cart = new Cart();
-        cart.addProduct(product);
+        AuthenticationUser authUser = (AuthenticationUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (authUser.getRole().equals("GUEST")) {
+            authService.registerUser(new RegistrationUser());
+        }
+        Long userId = authService.findUserByToken(authUser.getToken())
+                .map(UserDTO::id).orElseThrow(() -> new CustomException("No such user"));
+
+        cartService.addProductToUserCart(order, userId);
+
         //change cart entity , add in quantity and details
         // so we can work around customizecake and add it to the cart too
     }

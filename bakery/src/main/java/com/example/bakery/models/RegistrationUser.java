@@ -16,4 +16,5 @@ public class RegistrationUser {
     private String email;
     private String phone;
     private String receiveNotifications;
+    private String token;
 }

@@ -1,4 +1,6 @@
 package com.example.bakery.models;
 
-public record ProductOrderVO(Long id, Integer quantity) {
+public record ProductOrderVO(
+        Long id,
+        Integer quantity) {
 }
